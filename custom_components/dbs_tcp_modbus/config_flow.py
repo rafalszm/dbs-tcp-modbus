@@ -9,6 +9,7 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PORT
+from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import selector
 
@@ -33,7 +34,7 @@ class DBSTCPModbusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle DBS TCP Modbus setup."""
 
     VERSION = 1
-    MINOR_VERSION = 2
+    MINOR_VERSION = 3
 
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle manual setup from the UI."""
@@ -100,12 +101,45 @@ class DBSTCPModbusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return {}
 
     def _is_duplicate_connection(self, data: dict[str, Any], current_entry_id: str | None = None) -> bool:
-        for entry in self.hass.config_entries.async_entries(DOMAIN):
-            if entry.entry_id == current_entry_id:
-                continue
-            if _connection_key(dict(entry.data)) == _connection_key(data):
-                return True
-        return False
+        return _is_duplicate_connection(self.hass, data, current_entry_id)
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry: config_entries.ConfigEntry) -> DBSTCPModbusOptionsFlow:
+        """Create the options flow for editing an existing station."""
+        return DBSTCPModbusOptionsFlow()
+
+
+class DBSTCPModbusOptionsFlow(config_entries.OptionsFlow):
+    """Handle station edits from the integration options button."""
+
+    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+        """Edit connection settings and the CSV map."""
+        defaults = {**dict(self.config_entry.data), **dict(self.config_entry.options)}
+        errors: dict[str, str] = {}
+
+        if user_input is not None:
+            data = _normalize_input(user_input, defaults)
+            errors = _validate_map(data)
+            if not errors:
+                if _is_duplicate_connection(self.hass, data, self.config_entry.entry_id):
+                    errors["base"] = "already_configured"
+                else:
+                    self.hass.config_entries.async_update_entry(
+                        self.config_entry,
+                        title=data[CONF_STATION_NAME],
+                        data=data,
+                    )
+                    self.hass.async_create_task(
+                        self.hass.config_entries.async_reload(self.config_entry.entry_id)
+                    )
+                    return self.async_create_entry(title="", data={})
+
+        return self.async_show_form(
+            step_id="init",
+            data_schema=_schema(user_input or defaults),
+            errors=errors,
+        )
 
 
 def _schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
@@ -134,6 +168,16 @@ def _schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
     )
 
 
+def _validate_map(data: dict[str, Any]) -> dict[str, str]:
+    try:
+        parse_optional_register_csv(data[CONF_MAP_CSV])
+    except CsvMapError:
+        return {"base": "invalid_csv"}
+    except Exception:
+        return {"base": "unknown"}
+    return {}
+
+
 def _normalize_input(data: dict[str, Any], existing: dict[str, Any] | None = None) -> dict[str, Any]:
     existing = existing or {}
     return {
@@ -157,3 +201,13 @@ def _connection_key(data: dict[str, Any]) -> str:
         f"{data[CONF_HOST].lower()}:{data[CONF_PORT]}:"
         f"{data[CONF_UNIT_ID]}:{slugify(data[CONF_STATION_NAME])}"
     )
+
+
+def _is_duplicate_connection(hass: Any, data: dict[str, Any], current_entry_id: str | None = None) -> bool:
+    for entry in hass.config_entries.async_entries(DOMAIN):
+        if entry.entry_id == current_entry_id:
+            continue
+        entry_data = {**dict(entry.data), **dict(entry.options)}
+        if _connection_key(entry_data) == _connection_key(data):
+            return True
+    return False

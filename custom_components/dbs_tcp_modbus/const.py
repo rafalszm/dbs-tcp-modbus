@@ -4,7 +4,7 @@ from __future__ import annotations
 
 DOMAIN = "dbs_tcp_modbus"
 NAME = "DBS TCP Modbus"
-VERSION = "1.0.2"
+VERSION = "1.0.3"
 
 PLATFORMS = ["sensor", "binary_sensor"]
 

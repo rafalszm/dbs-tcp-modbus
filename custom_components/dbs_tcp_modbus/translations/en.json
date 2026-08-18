@@ -31,6 +31,22 @@
           "timeout": "Timeout",
           "map_csv": "CSV register map (optional)"
         }
+      },
+      "init": {
+        "title": "Edit Modbus TCP station",
+        "description": "Update the connection settings or paste a new CSV register map.",
+        "data": {
+          "station_name": "Station name",
+          "host": "Host",
+          "port": "Port",
+          "unit_id": "Unit/slave ID",
+          "scan_interval": "Scan interval (seconds)",
+          "timeout": "Timeout",
+          "map_csv": "CSV register map (optional)"
+        },
+        "data_description": {
+          "map_csv": "Optional. Required columns when used: key,name,function,address,type. Addresses are zero-based."
+        }
       }
     },
     "error": {

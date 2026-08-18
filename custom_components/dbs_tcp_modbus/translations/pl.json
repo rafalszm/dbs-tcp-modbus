@@ -31,6 +31,22 @@
           "timeout": "Timeout",
           "map_csv": "Mapa rejestrow CSV (opcjonalna)"
         }
+      },
+      "init": {
+        "title": "Edytuj stacje Modbus TCP",
+        "description": "Zmien ustawienia polaczenia albo wklej nowa mape rejestrow CSV.",
+        "data": {
+          "station_name": "Nazwa stacji",
+          "host": "Host",
+          "port": "Port",
+          "unit_id": "Unit/slave ID",
+          "scan_interval": "Interwal odczytu (sekundy)",
+          "timeout": "Timeout",
+          "map_csv": "Mapa rejestrow CSV (opcjonalna)"
+        },
+        "data_description": {
+          "map_csv": "Opcjonalna. Wymagane kolumny po uzyciu: key,name,function,address,type. Adresy sa zero-based."
+        }
       }
     },
     "error": {
