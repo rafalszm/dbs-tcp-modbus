@@ -30,6 +30,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Migrate older config entries to the current data shape."""
+    from .const import CONF_STATION_ID
+    from .models import legacy_station_id
+
+    if CONF_STATION_ID not in entry.data:
+        data = dict(entry.data)
+        data[CONF_STATION_ID] = legacy_station_id(data)
+        hass.config_entries.async_update_entry(entry, data=data, minor_version=2, version=1)
+    return True
+
+
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload one station."""
     from .const import DOMAIN, PLATFORMS

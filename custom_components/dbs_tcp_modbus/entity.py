@@ -9,7 +9,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN, NAME, VERSION
 from .coordinator import DBSModbusCoordinator
-from .models import RegisterDefinition, StationConfig, slugify
+from .models import RegisterDefinition, StationConfig
 
 
 class DBSModbusEntity(CoordinatorEntity[DBSModbusCoordinator]):
@@ -26,8 +26,7 @@ class DBSModbusEntity(CoordinatorEntity[DBSModbusCoordinator]):
         super().__init__(coordinator)
         self.station = station
         self.definition = definition
-        station_slug = slugify(station.name)
-        self._attr_unique_id = f"{DOMAIN}_{station_slug}_{definition.key}"
+        self._attr_unique_id = f"{DOMAIN}_{station.station_id}_{definition.key}"
         self._attr_name = definition.name
         self._attr_icon = definition.icon
         self._attr_entity_registry_enabled_default = definition.enabled_by_default
@@ -40,9 +39,8 @@ class DBSModbusEntity(CoordinatorEntity[DBSModbusCoordinator]):
     @property
     def device_info(self) -> DeviceInfo:
         """Return Home Assistant device info for the station."""
-        station_slug = slugify(self.station.name)
         return DeviceInfo(
-            identifiers={(DOMAIN, f"{self.station.host}:{self.station.port}:{self.station.unit_id}:{station_slug}")},
+            identifiers={(DOMAIN, self.station.station_id)},
             name=self.station.name,
             manufacturer="Digital Best Solutions",
             model=NAME,
@@ -62,4 +60,3 @@ class DBSModbusEntity(CoordinatorEntity[DBSModbusCoordinator]):
         if self.definition.section:
             attrs["section"] = self.definition.section
         return attrs
-

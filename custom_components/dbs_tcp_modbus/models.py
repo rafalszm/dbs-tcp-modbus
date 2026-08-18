@@ -14,6 +14,7 @@ from typing import Any
 from .const import (
     CONF_MAP_CSV,
     CONF_SCAN_INTERVAL,
+    CONF_STATION_ID,
     CONF_STATION_NAME,
     CONF_TIMEOUT,
     CONF_UNIT_ID,
@@ -40,6 +41,7 @@ class StationConfig:
 
     name: str
     host: str
+    station_id: str
     port: int = DEFAULT_PORT
     unit_id: int = DEFAULT_UNIT_ID
     scan_interval: int = DEFAULT_SCAN_INTERVAL
@@ -52,6 +54,7 @@ class StationConfig:
         return cls(
             name=str(data[CONF_STATION_NAME]).strip(),
             host=str(data["host"]).strip(),
+            station_id=str(data.get(CONF_STATION_ID) or legacy_station_id(data)).strip(),
             port=int(data.get("port", DEFAULT_PORT)),
             unit_id=int(data.get(CONF_UNIT_ID, DEFAULT_UNIT_ID)),
             scan_interval=int(data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)),
@@ -119,6 +122,15 @@ def slugify(value: str) -> str:
     slug = re.sub(r"[^a-zA-Z0-9_]+", "_", normalized).strip("_").lower()
     slug = re.sub(r"_+", "_", slug)
     return slug or "value"
+
+
+def legacy_station_id(data: dict[str, Any]) -> str:
+    """Build a stable fallback ID for entries created before station_id existed."""
+    name = str(data.get(CONF_STATION_NAME, "station"))
+    host = str(data.get("host", "host"))
+    port = str(data.get("port", DEFAULT_PORT))
+    unit_id = str(data.get(CONF_UNIT_ID, DEFAULT_UNIT_ID))
+    return slugify(f"{name}_{host}_{port}_{unit_id}")
 
 
 def parse_register_csv(text: str) -> list[RegisterDefinition]:
@@ -284,4 +296,3 @@ def _parse_optional_bool(row: dict[str, Any], field: str, default: bool) -> bool
     if value_text is None:
         return default
     return value_text.lower() not in {"0", "false", "no", "off", "nie"}
-

@@ -10,6 +10,7 @@ PLATFORMS = ["sensor", "binary_sensor"]
 
 CONF_MAP_CSV = "map_csv"
 CONF_SCAN_INTERVAL = "scan_interval"
+CONF_STATION_ID = "station_id"
 CONF_STATION_NAME = "station_name"
 CONF_TIMEOUT = "timeout"
 CONF_UNIT_ID = "unit_id"

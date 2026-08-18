@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import Any
+from uuid import uuid4
 
 import voluptuous as vol
 
@@ -15,6 +16,7 @@ from .client import ModbusReadError, test_modbus_connection
 from .const import (
     CONF_MAP_CSV,
     CONF_SCAN_INTERVAL,
+    CONF_STATION_ID,
     CONF_STATION_NAME,
     CONF_TIMEOUT,
     CONF_UNIT_ID,
@@ -31,18 +33,21 @@ class DBSTCPModbusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle DBS TCP Modbus setup."""
 
     VERSION = 1
-    MINOR_VERSION = 1
+    MINOR_VERSION = 2
 
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle manual setup from the UI."""
         errors: dict[str, str] = {}
         if user_input is not None:
             data = _normalize_input(user_input)
-            errors = await self._validate(data)
+            errors = await self._validate_for_setup(data)
             if not errors:
-                await self.async_set_unique_id(_unique_id(data))
-                self._abort_if_unique_id_configured()
-                return self.async_create_entry(title=data[CONF_STATION_NAME], data=data)
+                if self._is_duplicate_connection(data):
+                    errors["base"] = "already_configured"
+                else:
+                    await self.async_set_unique_id(_unique_id(data))
+                    self._abort_if_unique_id_configured()
+                    return self.async_create_entry(title=data[CONF_STATION_NAME], data=data)
 
         return self.async_show_form(
             step_id="user",
@@ -56,10 +61,10 @@ class DBSTCPModbusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         defaults = dict(entry.data)
         errors: dict[str, str] = {}
         if user_input is not None:
-            data = _normalize_input(user_input)
-            errors = await self._validate(data)
+            data = _normalize_input(user_input, defaults)
+            errors = self._validate_for_reconfigure(data)
             if not errors:
-                if self._is_duplicate(data, entry.entry_id):
+                if self._is_duplicate_connection(data, entry.entry_id):
                     errors["base"] = "already_configured"
                 else:
                     return self.async_update_reload_and_abort(
@@ -73,7 +78,7 @@ class DBSTCPModbusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def _validate(self, data: dict[str, Any]) -> dict[str, str]:
+    async def _validate_for_setup(self, data: dict[str, Any]) -> dict[str, str]:
         try:
             registers = parse_register_csv(data[CONF_MAP_CSV])
             await test_modbus_connection(StationConfig.from_data(data), registers)
@@ -85,11 +90,20 @@ class DBSTCPModbusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return {"base": "unknown"}
         return {}
 
-    def _is_duplicate(self, data: dict[str, Any], current_entry_id: str | None = None) -> bool:
+    def _validate_for_reconfigure(self, data: dict[str, Any]) -> dict[str, str]:
+        try:
+            parse_register_csv(data[CONF_MAP_CSV])
+        except CsvMapError:
+            return {"base": "invalid_csv"}
+        except Exception:
+            return {"base": "unknown"}
+        return {}
+
+    def _is_duplicate_connection(self, data: dict[str, Any], current_entry_id: str | None = None) -> bool:
         for entry in self.hass.config_entries.async_entries(DOMAIN):
             if entry.entry_id == current_entry_id:
                 continue
-            if _unique_id(dict(entry.data)) == _unique_id(data):
+            if _connection_key(dict(entry.data)) == _connection_key(data):
                 return True
         return False
 
@@ -120,8 +134,10 @@ def _schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
     )
 
 
-def _normalize_input(data: dict[str, Any]) -> dict[str, Any]:
+def _normalize_input(data: dict[str, Any], existing: dict[str, Any] | None = None) -> dict[str, Any]:
+    existing = existing or {}
     return {
+        CONF_STATION_ID: str(existing.get(CONF_STATION_ID) or uuid4().hex),
         CONF_STATION_NAME: str(data[CONF_STATION_NAME]).strip(),
         CONF_HOST: str(data[CONF_HOST]).strip(),
         CONF_PORT: int(data.get(CONF_PORT, DEFAULT_PORT)),
@@ -133,6 +149,10 @@ def _normalize_input(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def _unique_id(data: dict[str, Any]) -> str:
+    return str(data[CONF_STATION_ID])
+
+
+def _connection_key(data: dict[str, Any]) -> str:
     return (
         f"{data[CONF_HOST].lower()}:{data[CONF_PORT]}:"
         f"{data[CONF_UNIT_ID]}:{slugify(data[CONF_STATION_NAME])}"

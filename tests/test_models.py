@@ -6,7 +6,21 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "custom_components"))
 
-from dbs_tcp_modbus.models import CsvMapError, RegisterDefinition, decode_register_value, parse_register_csv
+from dbs_tcp_modbus.const import (
+    CONF_MAP_CSV,
+    CONF_SCAN_INTERVAL,
+    CONF_STATION_ID,
+    CONF_STATION_NAME,
+    CONF_TIMEOUT,
+    CONF_UNIT_ID,
+)
+from dbs_tcp_modbus.models import (
+    CsvMapError,
+    RegisterDefinition,
+    StationConfig,
+    decode_register_value,
+    parse_register_csv,
+)
 
 
 class TestModels(unittest.TestCase):
@@ -58,6 +72,37 @@ running,Running,1,2,coil,,,,,,,
         scaled = RegisterDefinition("pressure", "Pressure", 4, 0, "uint16", scale=0.1, offset=1, precision=1)
         self.assertTrue(decode_register_value(coil, [True]))
         self.assertEqual(scaled.apply_scale(decode_register_value(scaled, [123])), 13.3)
+
+    def test_station_config_uses_stable_station_id(self) -> None:
+        data = {
+            CONF_STATION_ID: "abc123",
+            CONF_STATION_NAME: "Station",
+            "host": "192.168.1.10",
+            "port": 502,
+            CONF_UNIT_ID: 1,
+            CONF_SCAN_INTERVAL: 10,
+            CONF_TIMEOUT: 3,
+            CONF_MAP_CSV: "key,name,function,address,type\nx,X,4,1,uint16\n",
+        }
+
+        station = StationConfig.from_data(data)
+
+        self.assertEqual(station.station_id, "abc123")
+
+    def test_station_config_falls_back_for_legacy_entries(self) -> None:
+        data = {
+            CONF_STATION_NAME: "Station",
+            "host": "192.168.1.10",
+            "port": 502,
+            CONF_UNIT_ID: 1,
+            CONF_SCAN_INTERVAL: 10,
+            CONF_TIMEOUT: 3,
+            CONF_MAP_CSV: "key,name,function,address,type\nx,X,4,1,uint16\n",
+        }
+
+        station = StationConfig.from_data(data)
+
+        self.assertEqual(station.station_id, "station_192_168_1_10_502_1")
 
 
 def _reg(value_type: str, **kwargs: object) -> RegisterDefinition:

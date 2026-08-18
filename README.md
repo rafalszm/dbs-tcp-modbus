@@ -32,6 +32,12 @@ The setup form asks for:
 Add every physical station as a separate integration entry. This keeps each station as
 its own Home Assistant device.
 
+Existing stations can be reconfigured from the integration entry. Changing the IP address,
+port, unit ID, scan settings, or CSV map keeps the same Home Assistant device identity.
+During reconfiguration the integration validates the CSV map but does not block saving on
+a failed Modbus read; if the controller is unreachable after saving, entities become
+unavailable until communication recovers.
+
 ## CSV Map
 
 Required columns:
@@ -80,4 +86,3 @@ See `examples/feliksow.csv` for a larger map.
 
 Version `0.1.0` is read-only. It creates `sensor` and `binary_sensor` entities and does
 not write coils or registers.
-
