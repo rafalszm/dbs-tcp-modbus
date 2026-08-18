@@ -1,5 +1,6 @@
 {
   "name": "DBS TCP Modbus",
+  "render_readme": true,
+  "country": "PL",
   "homeassistant": "2025.8.0"
 }
-

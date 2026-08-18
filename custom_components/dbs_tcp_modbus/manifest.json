@@ -2,14 +2,13 @@
   "domain": "dbs_tcp_modbus",
   "name": "DBS TCP Modbus",
   "after_dependencies": [],
-  "codeowners": [],
+  "codeowners": ["@rafalszm"],
   "config_flow": true,
-  "documentation": "https://github.com/digitalbestsolutions/ha-dbs-tcp-modbus",
+  "documentation": "https://github.com/rafalszm/dbs-tcp-modbus",
   "integration_type": "hub",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/digitalbestsolutions/ha-dbs-tcp-modbus/issues",
+  "issue_tracker": "https://github.com/rafalszm/dbs-tcp-modbus/issues",
   "loggers": ["pymodbus"],
   "requirements": ["pymodbus>=3.11.3,<4.0.0"],
-  "version": "0.1.0"
+  "version": "1.0.0"
 }
-

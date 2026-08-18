@@ -1,22 +1,36 @@
 # DBS TCP Modbus
 
-DBS TCP Modbus is a Home Assistant custom integration for read-only Modbus TCP stations.
-Each station is added as a separate Home Assistant integration entry and appears as one
-device with many entities.
+Custom integration for Home Assistant that reads Modbus TCP stations directly from
+controllers exposing Modbus TCP. Each station is added as a separate integration entry
+and appears in Home Assistant as one device with many entities.
+
+Version `1.0.0` is read-only. It creates `sensor` and `binary_sensor` entities and does
+not write coils or registers.
 
 ## Installation
+
+### HACS
+
+1. Open HACS in Home Assistant.
+2. Go to `Integrations`.
+3. Open the three-dot menu and choose `Custom repositories`.
+4. Add repository URL: `https://github.com/rafalszm/dbs-tcp-modbus`.
+5. Select category `Integration`.
+6. Install `DBS TCP Modbus`.
+7. Restart Home Assistant.
+8. Go to `Settings -> Devices & services -> Add integration`.
+9. Search for `DBS TCP Modbus`.
+
+Updates are handled by HACS from GitHub versions/tags. Test releases should bump
+`version` in `custom_components/dbs_tcp_modbus/manifest.json` and use a matching Git tag,
+for example `v1.0.1`.
 
 ### Manual
 
 1. Copy `custom_components/dbs_tcp_modbus` into `/config/custom_components/`.
 2. Restart Home Assistant.
-3. Go to Settings -> Devices & services -> Add integration.
+3. Go to `Settings -> Devices & services -> Add integration`.
 4. Search for `DBS TCP Modbus`.
-
-### HACS custom repository
-
-Add this repository to HACS as a custom integration repository, install it, and restart
-Home Assistant.
 
 ## Adding a Station
 
@@ -35,7 +49,7 @@ its own Home Assistant device.
 Existing stations can be reconfigured from the integration entry. Changing the IP address,
 port, unit ID, scan settings, or CSV map keeps the same Home Assistant device identity.
 During reconfiguration the integration validates the CSV map but does not block saving on
-a failed Modbus read; if the controller is unreachable after saving, entities become
+a failed Modbus read. If the controller is unreachable after saving, entities become
 unavailable until communication recovers.
 
 ## CSV Map
@@ -82,7 +96,6 @@ pump_running,Pump running,1,10,coil,,,,running,
 
 See `examples/feliksow.csv` for a larger map.
 
-## Notes
+## Repository
 
-Version `0.1.0` is read-only. It creates `sensor` and `binary_sensor` entities and does
-not write coils or registers.
+GitHub: `https://github.com/rafalszm/dbs-tcp-modbus`
