@@ -4,7 +4,7 @@ Custom integration for Home Assistant that reads Modbus TCP stations directly fr
 controllers exposing Modbus TCP. Each station is added as a separate integration entry
 and appears in Home Assistant as one device with many entities.
 
-Version `1.0.0` is read-only. It creates `sensor` and `binary_sensor` entities and does
+Version `1.0.1` is read-only. It creates `sensor` and `binary_sensor` entities and does
 not write coils or registers.
 
 ## Installation
@@ -21,9 +21,9 @@ not write coils or registers.
 8. Go to `Settings -> Devices & services -> Add integration`.
 9. Search for `DBS TCP Modbus`.
 
-Updates are handled by HACS from GitHub versions/tags. Test releases should bump
-`version` in `custom_components/dbs_tcp_modbus/manifest.json` and use a matching Git tag,
-for example `v1.0.1`.
+Updates are handled by HACS from GitHub releases. Version numbers use SemVer:
+`MAJOR.MINOR.PATCH` in `custom_components/dbs_tcp_modbus/manifest.json` and matching
+GitHub release tags with a `v` prefix, for example `v1.0.2`.
 
 ### Manual
 
@@ -99,3 +99,11 @@ See `examples/feliksow.csv` for a larger map.
 ## Repository
 
 GitHub: `https://github.com/rafalszm/dbs-tcp-modbus`
+
+## License
+
+DBS TCP Modbus is proprietary software. All rights reserved.
+
+Private, non-commercial testing is allowed under the limited terms in `LICENSE`.
+Commercial, professional, organizational, paid, hosted, customer-facing, or production
+use requires a separate written commercial license from the copyright holder.
