@@ -13,10 +13,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up one DBS TCP Modbus station."""
     from .const import DOMAIN, PLATFORMS
     from .coordinator import DBSModbusCoordinator
-    from .models import StationConfig, parse_register_csv
+    from .models import StationConfig, parse_optional_register_csv
 
     station = StationConfig.from_data(dict(entry.data))
-    registers = parse_register_csv(station.map_csv)
+    registers = parse_optional_register_csv(station.map_csv)
     coordinator = DBSModbusCoordinator(hass, station, registers)
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {

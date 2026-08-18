@@ -162,10 +162,12 @@ def _device_id_keyword() -> str:
 
 
 async def test_modbus_connection(station: StationConfig, registers: list[RegisterDefinition]) -> None:
-    """Validate that the station answers at least one read."""
+    """Validate TCP connectivity, and read one register when a map is available."""
     client = DbsModbusClient(station)
     try:
-        await client.read_probe(registers[0])
+        if registers:
+            await client.read_probe(registers[0])
+        else:
+            await client.connect()
     finally:
         await client.close()
-

@@ -4,7 +4,7 @@ Custom integration for Home Assistant that reads Modbus TCP stations directly fr
 controllers exposing Modbus TCP. Each station is added as a separate integration entry
 and appears in Home Assistant as one device with many entities.
 
-Version `1.0.1` is read-only. It creates `sensor` and `binary_sensor` entities and does
+Version `1.0.2` is read-only. It creates `sensor` and `binary_sensor` entities and does
 not write coils or registers.
 
 ## Installation
@@ -40,8 +40,8 @@ The setup form asks for:
 - host/IP
 - port, usually `502`
 - Modbus unit/slave ID
-- scan interval and timeout
-- CSV register map pasted into the form
+- scan interval in seconds and timeout
+- optional CSV register map pasted into the form
 
 Add every physical station as a separate integration entry. This keeps each station as
 its own Home Assistant device.
@@ -51,6 +51,11 @@ port, unit ID, scan settings, or CSV map keeps the same Home Assistant device id
 During reconfiguration the integration validates the CSV map but does not block saving on
 a failed Modbus read. If the controller is unreachable after saving, entities become
 unavailable until communication recovers.
+
+The CSV map can be left blank during initial testing. In that mode the integration only
+checks that the Modbus TCP endpoint accepts a TCP connection and creates a diagnostic
+`Connection` binary sensor. Register entities are created after a CSV map is added in
+the integration reconfigure flow.
 
 ## CSV Map
 

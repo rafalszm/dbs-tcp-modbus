@@ -207,6 +207,13 @@ def parse_register_csv(text: str) -> list[RegisterDefinition]:
     return registers
 
 
+def parse_optional_register_csv(text: str) -> list[RegisterDefinition]:
+    """Parse a pasted CSV map, returning no registers when the map is blank."""
+    if not text or not text.strip():
+        return []
+    return parse_register_csv(text)
+
+
 def decode_register_value(definition: RegisterDefinition, payload: list[int] | list[bool]) -> bool | int | float:
     """Decode one Modbus response slice according to a register definition."""
     if definition.is_binary:

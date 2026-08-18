@@ -20,6 +20,7 @@ from dbs_tcp_modbus.models import (
     StationConfig,
     decode_register_value,
     parse_register_csv,
+    parse_optional_register_csv,
 )
 
 
@@ -43,6 +44,10 @@ running,Running,1,2,coil,,,,,,,
     def test_parse_missing_required_column(self) -> None:
         with self.assertRaisesRegex(CsvMapError, "missing required columns"):
             parse_register_csv("key,name,function,address\nx,X,4,1\n")
+
+    def test_parse_optional_accepts_blank_map(self) -> None:
+        self.assertEqual(parse_optional_register_csv(""), [])
+        self.assertEqual(parse_optional_register_csv("  \n"), [])
 
     def test_parse_rejects_bad_function_and_type_combinations(self) -> None:
         with self.assertRaisesRegex(CsvMapError, "Function 1"):

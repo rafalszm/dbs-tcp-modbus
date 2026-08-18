@@ -5,18 +5,18 @@
     "step": {
       "user": {
         "title": "Add Modbus TCP station",
-        "description": "Paste a CSV register map and connection settings for one station.",
+        "description": "Enter connection settings for one station. The CSV register map can be added now or later.",
         "data": {
           "station_name": "Station name",
           "host": "Host",
           "port": "Port",
           "unit_id": "Unit/slave ID",
-          "scan_interval": "Scan interval",
+          "scan_interval": "Scan interval (seconds)",
           "timeout": "Timeout",
-          "map_csv": "CSV register map"
+          "map_csv": "CSV register map (optional)"
         },
         "data_description": {
-          "map_csv": "Required columns: key,name,function,address,type. Addresses are zero-based."
+          "map_csv": "Optional. Required columns when used: key,name,function,address,type. Addresses are zero-based."
         }
       },
       "reconfigure": {
@@ -27,9 +27,9 @@
           "host": "Host",
           "port": "Port",
           "unit_id": "Unit/slave ID",
-          "scan_interval": "Scan interval",
+          "scan_interval": "Scan interval (seconds)",
           "timeout": "Timeout",
-          "map_csv": "CSV register map"
+          "map_csv": "CSV register map (optional)"
         }
       }
     },

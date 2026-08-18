@@ -26,7 +26,7 @@ from .const import (
     DEFAULT_UNIT_ID,
     DOMAIN,
 )
-from .models import CsvMapError, StationConfig, parse_register_csv, slugify
+from .models import CsvMapError, StationConfig, parse_optional_register_csv, slugify
 
 
 class DBSTCPModbusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -80,7 +80,7 @@ class DBSTCPModbusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def _validate_for_setup(self, data: dict[str, Any]) -> dict[str, str]:
         try:
-            registers = parse_register_csv(data[CONF_MAP_CSV])
+            registers = parse_optional_register_csv(data[CONF_MAP_CSV])
             await test_modbus_connection(StationConfig.from_data(data), registers)
         except CsvMapError:
             return {"base": "invalid_csv"}
@@ -92,7 +92,7 @@ class DBSTCPModbusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     def _validate_for_reconfigure(self, data: dict[str, Any]) -> dict[str, str]:
         try:
-            parse_register_csv(data[CONF_MAP_CSV])
+            parse_optional_register_csv(data[CONF_MAP_CSV])
         except CsvMapError:
             return {"base": "invalid_csv"}
         except Exception:

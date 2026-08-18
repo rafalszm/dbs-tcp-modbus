@@ -5,18 +5,18 @@
     "step": {
       "user": {
         "title": "Dodaj stacje Modbus TCP",
-        "description": "Wklej mape rejestrow CSV i ustawienia polaczenia dla jednej stacji.",
+        "description": "Podaj ustawienia polaczenia dla jednej stacji. Mape rejestrow CSV mozna dodac teraz albo pozniej.",
         "data": {
           "station_name": "Nazwa stacji",
           "host": "Host",
           "port": "Port",
           "unit_id": "Unit/slave ID",
-          "scan_interval": "Interwal odczytu",
+          "scan_interval": "Interwal odczytu (sekundy)",
           "timeout": "Timeout",
-          "map_csv": "Mapa rejestrow CSV"
+          "map_csv": "Mapa rejestrow CSV (opcjonalna)"
         },
         "data_description": {
-          "map_csv": "Wymagane kolumny: key,name,function,address,type. Adresy sa zero-based."
+          "map_csv": "Opcjonalna. Wymagane kolumny po uzyciu: key,name,function,address,type. Adresy sa zero-based."
         }
       },
       "reconfigure": {
@@ -27,9 +27,9 @@
           "host": "Host",
           "port": "Port",
           "unit_id": "Unit/slave ID",
-          "scan_interval": "Interwal odczytu",
+          "scan_interval": "Interwal odczytu (sekundy)",
           "timeout": "Timeout",
-          "map_csv": "Mapa rejestrow CSV"
+          "map_csv": "Mapa rejestrow CSV (opcjonalna)"
         }
       }
     },
