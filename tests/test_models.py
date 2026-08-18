@@ -1,0 +1,68 @@
+from __future__ import annotations
+
+import unittest
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "custom_components"))
+
+from dbs_tcp_modbus.models import CsvMapError, RegisterDefinition, decode_register_value, parse_register_csv
+
+
+class TestModels(unittest.TestCase):
+    def test_parse_valid_csv(self) -> None:
+        csv_text = """key,name,function,address,type,unit,scale,offset,precision,device_class,state_class,enabled_by_default
+pressure,Pressure,4,10,uint16,bar,0.1,1,1,pressure,measurement,false
+running,Running,1,2,coil,,,,,,,
+"""
+
+        registers = parse_register_csv(csv_text)
+
+        self.assertEqual(len(registers), 2)
+        self.assertEqual(registers[0].key, "pressure")
+        self.assertEqual(registers[0].scale, 0.1)
+        self.assertEqual(registers[0].offset, 1)
+        self.assertEqual(registers[0].precision, 1)
+        self.assertFalse(registers[0].enabled_by_default)
+        self.assertTrue(registers[1].is_binary)
+
+    def test_parse_missing_required_column(self) -> None:
+        with self.assertRaisesRegex(CsvMapError, "missing required columns"):
+            parse_register_csv("key,name,function,address\nx,X,4,1\n")
+
+    def test_parse_rejects_bad_function_and_type_combinations(self) -> None:
+        with self.assertRaisesRegex(CsvMapError, "Function 1"):
+            parse_register_csv("key,name,function,address,type\nx,X,1,1,uint16\n")
+        with self.assertRaisesRegex(CsvMapError, "Function 4"):
+            parse_register_csv("key,name,function,address,type\nx,X,4,1,coil\n")
+
+    def test_parse_rejects_duplicate_slug_keys(self) -> None:
+        with self.assertRaisesRegex(CsvMapError, "Duplicate key"):
+            parse_register_csv("key,name,function,address,type\nA B,One,4,1,uint16\na_b,Two,4,2,uint16\n")
+
+    def test_decode_uint16_and_int16(self) -> None:
+        self.assertEqual(decode_register_value(_reg("uint16"), [0x00FF]), 255)
+        self.assertEqual(decode_register_value(_reg("int16"), [0xFFFF]), -1)
+
+    def test_decode_uint32_and_int32(self) -> None:
+        self.assertEqual(decode_register_value(_reg("uint32"), [0x0001, 0x0002]), 65538)
+        self.assertEqual(decode_register_value(_reg("int32"), [0xFFFF, 0xFFFF]), -1)
+
+    def test_decode_float32_and_word_order(self) -> None:
+        self.assertAlmostEqual(decode_register_value(_reg("float32"), [0x3F80, 0x0000]), 1.0)
+        low_high = _reg("uint32", word_order="low_high")
+        self.assertEqual(decode_register_value(low_high, [0x0002, 0x0001]), 65538)
+
+    def test_decode_coil_and_scaling(self) -> None:
+        coil = RegisterDefinition("run", "Run", 1, 0, "coil")
+        scaled = RegisterDefinition("pressure", "Pressure", 4, 0, "uint16", scale=0.1, offset=1, precision=1)
+        self.assertTrue(decode_register_value(coil, [True]))
+        self.assertEqual(scaled.apply_scale(decode_register_value(scaled, [123])), 13.3)
+
+
+def _reg(value_type: str, **kwargs: object) -> RegisterDefinition:
+    return RegisterDefinition("x", "X", 4, 0, value_type, **kwargs)
+
+
+if __name__ == "__main__":
+    unittest.main()

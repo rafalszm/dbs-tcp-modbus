@@ -1,0 +1,55 @@
+key,name,function,address,type,unit,scale,offset,precision,device_class,state_class,icon,section,enabled_by_default,count,word_order,byte_order
+f_cisn_wody_max,Prog maksymalnego cisnienia wody,4,383,uint16,bar,0.1,,1,pressure,measurement,,Feliksow,,,high_low,big
+f_cisn_wody_minim,Prog minimalnego cisnienia wody,4,382,uint16,bar,0.1,,1,pressure,measurement,,Feliksow,,,high_low,big
+f_ex_an1_pow_technolog,Cisnienie powietrza technologicznego,4,99,uint16,bar,0.1,,1,pressure,measurement,,Feliksow,,,high_low,big
+f_login_apn,Login APN,4,380,uint16,,1.0,,,,,,Feliksow,false,,high_low,big
+f_mti1_zasilanie,Zasilanie,1,9,coil,,1.0,,,power,,,Feliksow,,,high_low,big
+f_mti2_pg1_praca,PG1 praca,1,10,coil,,1.0,,,running,,,Feliksow,,,high_low,big
+f_mti3_pg2_praca,PG2 praca,1,11,coil,,1.0,,,running,,,Feliksow,,,high_low,big
+f_mti4_pg3_praca,PG3 praca,1,12,coil,,1.0,,,running,,,Feliksow,,,high_low,big
+f_mti5_sprez_1_praca,Sprezarka 1 praca,1,13,coil,,1.0,,,running,,,Feliksow,,,high_low,big
+f_mti6_sprez_2_praca,Sprezarka 2 praca,1,14,coil,,1.0,,,running,,,Feliksow,,,high_low,big
+f_mti7_sprez_1_awaria,Sprezarka 1 awaria,1,15,coil,,1.0,,,problem,,,Feliksow,,,high_low,big
+f_mti8_sprez_2_awaria,Sprezarka 2 awaria,1,16,coil,,1.0,,,problem,,,Feliksow,,,high_low,big
+f_mtiq6_pg1_awaria,PG1 awaria,1,6,coil,,1.0,,,problem,,,Feliksow,,,high_low,big
+f_mtiq7_pg2_awaria,PG2 awaria,1,7,coil,,1.0,,,problem,,,Feliksow,,,high_low,big
+f_mtiq8_pg3_awaria,PG3 awaria,1,8,coil,,1.0,,,problem,,,Feliksow,,,high_low,big
+f_mt_an1_cis_wody,Cisnienie wody,4,999,uint16,bar,0.1,,1,pressure,measurement,,Feliksow,,,high_low,big
+f_p1_licz_godz,P1 licznik godzin,3,101,uint32,h,0.01,,2,duration,total_increasing,,Feliksow,,,high_low,big
+f_p1_licz_zal,P1 licznik zalaczen,3,181,uint32,,1.0,,,,total_increasing,mdi:counter,Feliksow,,,high_low,big
+f_p2_licz_godz,P2 licznik godzin,3,103,uint32,h,0.01,,2,duration,total_increasing,,Feliksow,,,high_low,big
+f_p2_licz_zal,P2 licznik zalaczen,3,183,uint32,,1.0,,,,total_increasing,mdi:counter,Feliksow,,,high_low,big
+f_p3_licz_godz,P3 licznik godzin,3,105,uint32,h,0.01,,2,duration,total_increasing,,Feliksow,,,high_low,big
+f_p3_licz_zal,P3 licznik zalaczen,3,185,uint32,,1.0,,,,total_increasing,mdi:counter,Feliksow,,,high_low,big
+f_p4_licz_godz,P4 licznik godzin,3,107,uint32,h,0.01,,2,duration,total_increasing,,Feliksow,,,high_low,big
+f_p4_licz_zal,P4 licznik zalaczen,3,187,uint32,,1.0,,,,total_increasing,mdi:counter,Feliksow,,,high_low,big
+f_p5_licz_godz,P5 licznik godzin,3,109,uint32,h,0.01,,2,duration,total_increasing,,Feliksow,,,high_low,big
+f_p5_licz_zal,P5 licznik zalaczen,3,189,uint32,,1.0,,,,total_increasing,mdi:counter,Feliksow,,,high_low,big
+f_pg1_licz_godz,PG1 licznik godzin,3,81,uint32,h,0.01,,2,duration,total_increasing,,Feliksow,,,high_low,big
+f_pg1_licz_zal,PG1 licznik zalaczen,3,19,uint32,,1.0,,,,total_increasing,mdi:counter,Feliksow,,,high_low,big
+f_pg2_licz_godz,PG2 licznik godzin,3,83,uint32,h,0.01,,2,duration,total_increasing,,Feliksow,,,high_low,big
+f_pg2_licz_zal,PG2 licznik zalaczen,3,21,uint32,,1.0,,,,total_increasing,mdi:counter,Feliksow,,,high_low,big
+f_pg3_licz_godz,PG3 licznik godzin,3,85,uint32,h,0.01,,2,duration,total_increasing,,Feliksow,,,high_low,big
+f_pg3_licz_zal,PG3 licznik zalaczen,3,23,uint32,,1.0,,,,total_increasing,mdi:counter,Feliksow,,,high_low,big
+f_pp_licz_godz,PP licznik godzin,3,111,uint32,h,0.01,,2,duration,total_increasing,,Feliksow,,,high_low,big
+f_pp_licz_zal,PP licznik zalaczen,3,191,uint32,,1.0,,,,total_increasing,mdi:counter,Feliksow,,,high_low,big
+f_poziom_gprs,Poziom sygnalu GPRS,4,381,uint16,%,0.1,,1,,measurement,mdi:signal,Feliksow,,,high_low,big
+f_poziom_wody_minim,Prog minimalnego poziomu wody,4,384,uint16,cm,1.0,,0,distance,measurement,,Feliksow,,,high_low,big
+f_sprez1_licz_godz,Sprezarka 1 licznik godzin,3,87,uint32,h,0.01,,2,duration,total_increasing,,Feliksow,,,high_low,big
+f_sprez1_licz_zal,Sprezarka 1 licznik zalaczen,3,25,uint32,,1.0,,,,total_increasing,mdi:counter,Feliksow,,,high_low,big
+f_sprez2_licz_godz,Sprezarka 2 licznik godzin,3,89,uint32,h,0.01,,2,duration,total_increasing,,Feliksow,,,high_low,big
+f_sprez2_licz_zal,Sprezarka 2 licznik zalaczen,3,27,uint32,,1.0,,,,total_increasing,mdi:counter,Feliksow,,,high_low,big
+f_we_ex,We EX,4,97,uint16,,1.0,,,,,mdi:code-braces,Feliksow,false,,high_low,big
+f_we_mt,We MT,4,997,uint16,,1.0,,,,,mdi:code-braces,Feliksow,false,,high_low,big
+f_wodom_pg1_chwil,PG1 przeplyw chwilowy,4,65,uint16,m3/h,0.1,,1,volume_flow_rate,measurement,,Feliksow,,,high_low,big
+f_wodom_pg1_suma,PG1 wodomierz suma,3,1,uint32,m3,0.01,,2,water,total_increasing,,Feliksow,,,high_low,big
+f_wodom_pg2_chwil,PG2 przeplyw chwilowy,4,66,uint16,m3/h,0.1,,1,volume_flow_rate,measurement,,Feliksow,,,high_low,big
+f_wodom_pg2_suma,PG2 wodomierz suma,3,3,uint32,m3,0.01,,2,water,total_increasing,,Feliksow,,,high_low,big
+f_wodom_pg3_chwil,PG3 przeplyw chwilowy,4,67,uint16,m3/h,0.1,,1,volume_flow_rate,measurement,,Feliksow,,,high_low,big
+f_wodom_pg3_suma,PG3 wodomierz suma,3,5,uint32,m3,0.01,,2,water,total_increasing,,Feliksow,,,high_low,big
+f_wodom_woda_plucz,Woda pluczaca suma,3,9,uint32,m3,0.01,,2,water,total_increasing,,Feliksow,,,high_low,big
+f_wodom_woda_plucz_chwil,Woda pluczaca przeplyw chwilowy,4,69,uint16,m3/h,0.1,,1,volume_flow_rate,measurement,,Feliksow,,,high_low,big
+f_wodom_woda_uzdat,Woda uzdatniona suma,3,7,uint32,m3,0.01,,2,water,total_increasing,,Feliksow,,,high_low,big
+f_wodom_woda_uzdat_chwil,Woda uzdatniona przeplyw chwilowy,4,68,uint16,m3/h,1.0,,1,volume_flow_rate,measurement,,Feliksow,,,high_low,big
+f_zatwierdz_zmiany,Zatwierdzenie zmian,4,385,uint16,,1.0,,,,,,Feliksow,false,,high_low,big
+

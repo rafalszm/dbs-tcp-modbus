@@ -1,0 +1,47 @@
+{
+  "title": "DBS TCP Modbus",
+  "config": {
+    "flow_title": "DBS TCP Modbus",
+    "step": {
+      "user": {
+        "title": "Dodaj stacje Modbus TCP",
+        "description": "Wklej mape rejestrow CSV i ustawienia polaczenia dla jednej stacji.",
+        "data": {
+          "station_name": "Nazwa stacji",
+          "host": "Host",
+          "port": "Port",
+          "unit_id": "Unit/slave ID",
+          "scan_interval": "Interwal odczytu",
+          "timeout": "Timeout",
+          "map_csv": "Mapa rejestrow CSV"
+        },
+        "data_description": {
+          "map_csv": "Wymagane kolumny: key,name,function,address,type. Adresy sa zero-based."
+        }
+      },
+      "reconfigure": {
+        "title": "Zmien konfiguracje stacji Modbus TCP",
+        "description": "Zmien ustawienia polaczenia albo wklej nowa mape rejestrow CSV.",
+        "data": {
+          "station_name": "Nazwa stacji",
+          "host": "Host",
+          "port": "Port",
+          "unit_id": "Unit/slave ID",
+          "scan_interval": "Interwal odczytu",
+          "timeout": "Timeout",
+          "map_csv": "Mapa rejestrow CSV"
+        }
+      }
+    },
+    "error": {
+      "already_configured": "Ta stacja jest juz skonfigurowana.",
+      "cannot_connect": "Nie mozna polaczyc sie ze stacja albo odczytac pierwszego rejestru.",
+      "invalid_csv": "Mapa CSV jest niepoprawna.",
+      "unknown": "Nieoczekiwany blad."
+    },
+    "abort": {
+      "already_configured": "Ta stacja jest juz skonfigurowana.",
+      "reconfigure_successful": "Zmiana konfiguracji zakonczona powodzeniem."
+    }
+  }
+}

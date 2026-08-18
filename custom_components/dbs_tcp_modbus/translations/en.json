@@ -1,0 +1,47 @@
+{
+  "title": "DBS TCP Modbus",
+  "config": {
+    "flow_title": "DBS TCP Modbus",
+    "step": {
+      "user": {
+        "title": "Add Modbus TCP station",
+        "description": "Paste a CSV register map and connection settings for one station.",
+        "data": {
+          "station_name": "Station name",
+          "host": "Host",
+          "port": "Port",
+          "unit_id": "Unit/slave ID",
+          "scan_interval": "Scan interval",
+          "timeout": "Timeout",
+          "map_csv": "CSV register map"
+        },
+        "data_description": {
+          "map_csv": "Required columns: key,name,function,address,type. Addresses are zero-based."
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure Modbus TCP station",
+        "description": "Update the connection settings or paste a new CSV register map.",
+        "data": {
+          "station_name": "Station name",
+          "host": "Host",
+          "port": "Port",
+          "unit_id": "Unit/slave ID",
+          "scan_interval": "Scan interval",
+          "timeout": "Timeout",
+          "map_csv": "CSV register map"
+        }
+      }
+    },
+    "error": {
+      "already_configured": "This station is already configured.",
+      "cannot_connect": "Cannot connect to the station or read the first register.",
+      "invalid_csv": "The CSV map is invalid.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "This station is already configured.",
+      "reconfigure_successful": "Reconfiguration was successful."
+    }
+  }
+}

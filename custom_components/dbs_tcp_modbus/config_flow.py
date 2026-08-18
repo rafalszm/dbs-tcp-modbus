@@ -1,0 +1,139 @@
+"""Config flow for DBS TCP Modbus."""
+
+from __future__ import annotations
+
+from typing import Any
+
+import voluptuous as vol
+
+from homeassistant import config_entries
+from homeassistant.const import CONF_HOST, CONF_PORT
+from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers import selector
+
+from .client import ModbusReadError, test_modbus_connection
+from .const import (
+    CONF_MAP_CSV,
+    CONF_SCAN_INTERVAL,
+    CONF_STATION_NAME,
+    CONF_TIMEOUT,
+    CONF_UNIT_ID,
+    DEFAULT_PORT,
+    DEFAULT_SCAN_INTERVAL,
+    DEFAULT_TIMEOUT,
+    DEFAULT_UNIT_ID,
+    DOMAIN,
+)
+from .models import CsvMapError, StationConfig, parse_register_csv, slugify
+
+
+class DBSTCPModbusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+    """Handle DBS TCP Modbus setup."""
+
+    VERSION = 1
+    MINOR_VERSION = 1
+
+    async def async_step_user(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+        """Handle manual setup from the UI."""
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            data = _normalize_input(user_input)
+            errors = await self._validate(data)
+            if not errors:
+                await self.async_set_unique_id(_unique_id(data))
+                self._abort_if_unique_id_configured()
+                return self.async_create_entry(title=data[CONF_STATION_NAME], data=data)
+
+        return self.async_show_form(
+            step_id="user",
+            data_schema=_schema(user_input),
+            errors=errors,
+        )
+
+    async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+        """Handle reconfiguration of an existing station."""
+        entry = self._get_reconfigure_entry()
+        defaults = dict(entry.data)
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            data = _normalize_input(user_input)
+            errors = await self._validate(data)
+            if not errors:
+                if self._is_duplicate(data, entry.entry_id):
+                    errors["base"] = "already_configured"
+                else:
+                    return self.async_update_reload_and_abort(
+                        entry,
+                        data_updates=data,
+                    )
+
+        return self.async_show_form(
+            step_id="reconfigure",
+            data_schema=_schema(user_input or defaults),
+            errors=errors,
+        )
+
+    async def _validate(self, data: dict[str, Any]) -> dict[str, str]:
+        try:
+            registers = parse_register_csv(data[CONF_MAP_CSV])
+            await test_modbus_connection(StationConfig.from_data(data), registers)
+        except CsvMapError:
+            return {"base": "invalid_csv"}
+        except ModbusReadError:
+            return {"base": "cannot_connect"}
+        except Exception:
+            return {"base": "unknown"}
+        return {}
+
+    def _is_duplicate(self, data: dict[str, Any], current_entry_id: str | None = None) -> bool:
+        for entry in self.hass.config_entries.async_entries(DOMAIN):
+            if entry.entry_id == current_entry_id:
+                continue
+            if _unique_id(dict(entry.data)) == _unique_id(data):
+                return True
+        return False
+
+
+def _schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
+    defaults = defaults or {}
+    return vol.Schema(
+        {
+            vol.Required(CONF_STATION_NAME, default=defaults.get(CONF_STATION_NAME, "")): str,
+            vol.Required(CONF_HOST, default=defaults.get(CONF_HOST, "")): str,
+            vol.Optional(CONF_PORT, default=defaults.get(CONF_PORT, DEFAULT_PORT)): vol.All(
+                vol.Coerce(int), vol.Range(min=1, max=65535)
+            ),
+            vol.Optional(CONF_UNIT_ID, default=defaults.get(CONF_UNIT_ID, DEFAULT_UNIT_ID)): vol.All(
+                vol.Coerce(int), vol.Range(min=1, max=247)
+            ),
+            vol.Optional(
+                CONF_SCAN_INTERVAL,
+                default=defaults.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+            ): vol.All(vol.Coerce(int), vol.Range(min=2, max=3600)),
+            vol.Optional(CONF_TIMEOUT, default=defaults.get(CONF_TIMEOUT, DEFAULT_TIMEOUT)): vol.All(
+                vol.Coerce(float), vol.Range(min=0.5, max=60)
+            ),
+            vol.Required(CONF_MAP_CSV, default=defaults.get(CONF_MAP_CSV, "")): selector.TextSelector(
+                selector.TextSelectorConfig(multiline=True)
+            ),
+        }
+    )
+
+
+def _normalize_input(data: dict[str, Any]) -> dict[str, Any]:
+    return {
+        CONF_STATION_NAME: str(data[CONF_STATION_NAME]).strip(),
+        CONF_HOST: str(data[CONF_HOST]).strip(),
+        CONF_PORT: int(data.get(CONF_PORT, DEFAULT_PORT)),
+        CONF_UNIT_ID: int(data.get(CONF_UNIT_ID, DEFAULT_UNIT_ID)),
+        CONF_SCAN_INTERVAL: int(data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)),
+        CONF_TIMEOUT: float(data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT)),
+        CONF_MAP_CSV: str(data[CONF_MAP_CSV]).strip(),
+    }
+
+
+def _unique_id(data: dict[str, Any]) -> str:
+    return (
+        f"{data[CONF_HOST].lower()}:{data[CONF_PORT]}:"
+        f"{data[CONF_UNIT_ID]}:{slugify(data[CONF_STATION_NAME])}"
+    )
