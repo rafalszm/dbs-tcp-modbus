@@ -160,9 +160,14 @@ def build_rows(sheet: Any, prefix: str) -> tuple[list[dict[str, Any]], dict[str,
             skipped_static += 1
             continue
 
-        unit = infer_unit(name, note, unit_hint, extra_note)
-        device_class = infer_device_class(name, unit)
-        state_class = infer_state_class(value_type, name)
+        if value_type == "bit":
+            unit = ""
+            device_class = ""
+            state_class = ""
+        else:
+            unit = infer_unit(name, note, unit_hint, extra_note)
+            device_class = infer_device_class(name, unit)
+            state_class = infer_state_class(value_type, name)
         section = current_section if value_type == "bit" else clean_section(section_marker)
         key = unique_key(prefix, section, name, row_address, keys)
         csv_row = {
