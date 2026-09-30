@@ -55,6 +55,22 @@ running,Running,1,2,coil,,,,,,,
         with self.assertRaisesRegex(CsvMapError, "Function 4"):
             parse_register_csv("key,name,function,address,type\nx,X,4,1,coil\n")
 
+    def test_parse_and_decode_register_bit(self) -> None:
+        registers = parse_register_csv("key,name,function,address,type,bit\nrun,Run,3,10,bit,3\n")
+
+        self.assertTrue(registers[0].is_binary)
+        self.assertEqual(registers[0].bit, 3)
+        self.assertTrue(decode_register_value(registers[0], [0b1000]))
+        self.assertFalse(decode_register_value(registers[0], [0b0100]))
+
+    def test_parse_rejects_bad_bit_config(self) -> None:
+        with self.assertRaisesRegex(CsvMapError, "Missing 'bit'"):
+            parse_register_csv("key,name,function,address,type\nx,X,3,1,bit\n")
+        with self.assertRaisesRegex(CsvMapError, "between 0 and 15"):
+            parse_register_csv("key,name,function,address,type,bit\nx,X,3,1,bit,16\n")
+        with self.assertRaisesRegex(CsvMapError, "only supported"):
+            parse_register_csv("key,name,function,address,type,bit\nx,X,3,1,uint16,1\n")
+
     def test_parse_rejects_duplicate_slug_keys(self) -> None:
         with self.assertRaisesRegex(CsvMapError, "Duplicate key"):
             parse_register_csv("key,name,function,address,type\nA B,One,4,1,uint16\na_b,Two,4,2,uint16\n")

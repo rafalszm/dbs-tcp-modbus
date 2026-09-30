@@ -4,7 +4,7 @@ Custom integration for Home Assistant that reads Modbus TCP stations directly fr
 controllers exposing Modbus TCP. Each station is added as a separate integration entry
 and appears in Home Assistant as one device with many entities.
 
-Version `1.0.3` is read-only. It creates `sensor` and `binary_sensor` entities and does
+Version `1.0.4` is read-only. It creates `sensor` and `binary_sensor` entities and does
 not write coils or registers.
 
 ## Installation
@@ -71,7 +71,7 @@ key,name,function,address,type
 Optional columns:
 
 ```csv
-unit,scale,offset,precision,device_class,state_class,icon,section,enabled_by_default,count,word_order,byte_order
+bit,unit,scale,offset,precision,device_class,state_class,icon,section,enabled_by_default,count,word_order,byte_order
 ```
 
 Supported function codes:
@@ -85,6 +85,7 @@ Supported types:
 
 - `coil`
 - `discrete`
+- `bit`
 - `uint16`
 - `int16`
 - `uint32`
@@ -93,6 +94,10 @@ Supported types:
 
 Addresses are zero-based, matching `pymodbus`. If a controller manual numbers a register
 as `40001`, the Modbus address is usually `0`.
+
+Use `type=bit` with function `3` or `4` and the optional `bit` column to expose one
+bit from a holding/input register as a `binary_sensor`. Bits are zero-based: `0` is the
+least significant bit and `15` is the most significant bit of the 16-bit register.
 
 Example:
 

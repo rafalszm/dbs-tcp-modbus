@@ -16,7 +16,7 @@
           "map_csv": "CSV register map (optional)"
         },
         "data_description": {
-          "map_csv": "Optional. Required columns when used: key,name,function,address,type. Addresses are zero-based."
+          "map_csv": "Optional. Required columns when used: key,name,function,address,type. Addresses and bit numbers are zero-based."
         }
       },
       "reconfigure": {
@@ -45,7 +45,7 @@
           "map_csv": "CSV register map (optional)"
         },
         "data_description": {
-          "map_csv": "Optional. Required columns when used: key,name,function,address,type. Addresses are zero-based."
+          "map_csv": "Optional. Required columns when used: key,name,function,address,type. Addresses and bit numbers are zero-based."
         }
       }
     },

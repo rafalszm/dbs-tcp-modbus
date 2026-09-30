@@ -59,4 +59,6 @@ class DBSModbusEntity(CoordinatorEntity[DBSModbusCoordinator]):
         }
         if self.definition.section:
             attrs["section"] = self.definition.section
+        if self.definition.bit is not None:
+            attrs["modbus_bit"] = self.definition.bit
         return attrs

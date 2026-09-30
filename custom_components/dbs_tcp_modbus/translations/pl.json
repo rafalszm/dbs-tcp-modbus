@@ -16,7 +16,7 @@
           "map_csv": "Mapa rejestrow CSV (opcjonalna)"
         },
         "data_description": {
-          "map_csv": "Opcjonalna. Wymagane kolumny po uzyciu: key,name,function,address,type. Adresy sa zero-based."
+          "map_csv": "Opcjonalna. Wymagane kolumny po uzyciu: key,name,function,address,type. Adresy i bity sa zero-based."
         }
       },
       "reconfigure": {
@@ -45,7 +45,7 @@
           "map_csv": "Mapa rejestrow CSV (opcjonalna)"
         },
         "data_description": {
-          "map_csv": "Opcjonalna. Wymagane kolumny po uzyciu: key,name,function,address,type. Adresy sa zero-based."
+          "map_csv": "Opcjonalna. Wymagane kolumny po uzyciu: key,name,function,address,type. Adresy i bity sa zero-based."
         }
       }
     },

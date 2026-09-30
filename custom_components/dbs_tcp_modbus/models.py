@@ -25,7 +25,7 @@ from .const import (
 )
 
 SUPPORTED_FUNCTIONS = {1, 2, 3, 4}
-SUPPORTED_TYPES = {"coil", "discrete", "uint16", "int16", "uint32", "int32", "float32"}
+SUPPORTED_TYPES = {"coil", "discrete", "bit", "uint16", "int16", "uint32", "int32", "float32"}
 REQUIRED_COLUMNS = {"key", "name", "function", "address", "type"}
 VALID_WORD_ORDERS = {"high_low", "low_high"}
 VALID_BYTE_ORDERS = {"big", "little"}
@@ -82,13 +82,14 @@ class RegisterDefinition:
     section: str | None = None
     enabled_by_default: bool = True
     count: int | None = None
+    bit: int | None = None
     word_order: str = "high_low"
     byte_order: str = "big"
 
     @property
     def is_binary(self) -> bool:
         """Return true for binary Home Assistant entities."""
-        return self.function in (1, 2) or self.value_type in {"coil", "discrete"}
+        return self.function in (1, 2) or self.value_type in {"coil", "discrete", "bit"}
 
     @property
     def effective_count(self) -> int:
@@ -167,6 +168,15 @@ def parse_register_csv(text: str) -> list[RegisterDefinition]:
             raise CsvMapError(f"Function {function} must use coil or discrete type at line {line_number}")
         if function in (3, 4) and value_type in {"coil", "discrete"}:
             raise CsvMapError(f"Function {function} must use a register type at line {line_number}")
+        bit = _parse_optional_int(row, "bit", line_number, minimum=0)
+        if bit is not None and bit > 15:
+            raise CsvMapError(f"'bit' must be between 0 and 15 at line {line_number}")
+        if value_type == "bit" and function not in (3, 4):
+            raise CsvMapError(f"Function {function} cannot use bit type at line {line_number}")
+        if value_type == "bit" and bit is None:
+            raise CsvMapError(f"Missing 'bit' for bit type at line {line_number}")
+        if value_type != "bit" and bit is not None:
+            raise CsvMapError(f"'bit' is only supported for bit type at line {line_number}")
 
         count = _parse_optional_int(row, "count", line_number)
         minimum_count = 2 if value_type in {"uint32", "int32", "float32"} else 1
@@ -197,6 +207,7 @@ def parse_register_csv(text: str) -> list[RegisterDefinition]:
                 section=_optional(row, "section"),
                 enabled_by_default=_parse_optional_bool(row, "enabled_by_default", default=True),
                 count=count,
+                bit=bit,
                 word_order=word_order,
                 byte_order=byte_order,
             )
@@ -219,6 +230,10 @@ def decode_register_value(definition: RegisterDefinition, payload: list[int] | l
     if definition.is_binary:
         if not payload:
             raise ValueError(f"No bits returned for {definition.key}")
+        if definition.value_type == "bit":
+            if definition.bit is None:
+                raise ValueError(f"No bit configured for {definition.key}")
+            return bool(int(payload[0]) & (1 << definition.bit))
         return bool(payload[0])
 
     words = [int(word) for word in payload[: definition.effective_count]]
