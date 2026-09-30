@@ -1,0 +1,309 @@
+type: sections
+sections:
+  - type: grid
+    cards:
+      - type: heading
+        heading: Studnie
+        heading_style: title
+      - type: horizontal-stack
+        cards:
+          - type: tile
+            entity: binary_sensor.suw_gawartowa_wola_pg1_pr
+            name: PG1
+            icon: mdi:water-well
+            color: green
+            vertical: true
+            features_position: bottom
+          - type: tile
+            entity: binary_sensor.suw_gawartowa_wola_pg2_pr
+            name: PG2
+            icon: mdi:water-well
+            color: green
+            vertical: true
+            features_position: bottom
+      - type: horizontal-stack
+        cards:
+          - type: tile
+            entity: binary_sensor.suw_gawartowa_wola_aw_pg1_1
+            name: Awaria PG1
+            icon: mdi:alert-box
+            color: red
+            vertical: false
+            features_position: bottom
+          - type: tile
+            entity: binary_sensor.suw_gawartowa_wola_aw_pg1_2
+            name: Awaria PG2
+            icon: mdi:alert-box
+            color: red
+            vertical: false
+            features_position: bottom
+      - type: horizontal-stack
+        cards:
+          - graph: line
+            type: sensor
+            entity: sensor.suw_gawartowa_wola_poz_pg1
+            name: Poziom PG1
+            detail: 1
+          - graph: line
+            type: sensor
+            entity: sensor.suw_gawartowa_wola_poz_pg2
+            name: Poziom PG2
+            detail: 1
+  - type: grid
+    cards:
+      - type: heading
+        heading: Pompy i urządzenia
+        heading_style: title
+      - type: horizontal-stack
+        cards:
+          - type: tile
+            entity: binary_sensor.suw_gawartowa_wola_pr_spr1
+            name: SPR1
+            icon: mdi:pump
+            color: green
+            vertical: true
+            features_position: bottom
+          - type: tile
+            entity: binary_sensor.suw_gawartowa_wola_pr_spr2
+            name: SPR2
+            icon: mdi:pump
+            color: green
+            vertical: true
+            features_position: bottom
+          - type: tile
+            entity: binary_sensor.suw_gawartowa_wola_pr_ppl
+            name: PPL
+            icon: mdi:pump
+            color: green
+            vertical: true
+            features_position: bottom
+          - type: tile
+            entity: binary_sensor.suw_gawartowa_wola_pr_agregat
+            name: Agregat
+            icon: mdi:engine
+            color: green
+            vertical: true
+            features_position: bottom
+      - type: horizontal-stack
+        cards:
+          - type: tile
+            entity: binary_sensor.suw_gawartowa_wola_aw_spr8_1
+            name: Awaria SPR1
+            icon: mdi:alert-box
+            color: red
+            features_position: bottom
+          - type: tile
+            entity: binary_sensor.suw_gawartowa_wola_aw_spr8_2
+            name: Awaria SPR2
+            icon: mdi:alert-box
+            color: red
+            features_position: bottom
+          - type: tile
+            entity: binary_sensor.suw_gawartowa_wola_aw_agregat
+            name: Awaria agregatu
+            icon: mdi:alert-box
+            color: red
+            features_position: bottom
+  - type: grid
+    cards:
+      - type: heading
+        heading: Zbiorniki i przepływy
+        heading_style: title
+      - square: false
+        type: grid
+        columns: 2
+        cards:
+          - type: gauge
+            entity: sensor.suw_gawartowa_wola_poz_zmw1
+            name: ZMW1
+            needle: true
+            min: 0
+            max: 10
+            severity:
+              green: 4
+              yellow: 2
+              red: 0
+          - type: gauge
+            entity: sensor.suw_gawartowa_wola_poz_zmw2
+            name: ZMW2
+            needle: true
+            min: 0
+            max: 10
+            severity:
+              green: 4
+              yellow: 2
+              red: 0
+          - type: gauge
+            entity: sensor.suw_gawartowa_wola_przep_siec
+            name: Przepływ sieć
+            needle: false
+            min: 0
+            max: 300
+            severity:
+              green: 100
+              yellow: 200
+              red: 260
+          - type: gauge
+            entity: sensor.suw_gawartowa_wola_pq_siec
+            name: PQ sieć
+            needle: false
+            min: 0
+            max: 300
+            severity:
+              green: 100
+              yellow: 200
+              red: 260
+      - type: horizontal-stack
+        cards:
+          - graph: line
+            type: sensor
+            entity: sensor.suw_gawartowa_wola_przep_surowa
+            name: Surowa
+            detail: 1
+          - graph: line
+            type: sensor
+            entity: sensor.suw_gawartowa_wola_przep_uzdatn
+            name: Uzdatniona
+            detail: 1
+          - graph: line
+            type: sensor
+            entity: sensor.suw_gawartowa_wola_przep_pluczaca
+            name: Płucząca
+            detail: 1
+  - type: grid
+    cards:
+      - type: heading
+        heading: Płukanie
+        heading_style: title
+      - type: horizontal-stack
+        cards:
+          - type: tile
+            entity: binary_sensor.suw_gawartowa_wola_jest_plukanie_f1
+            name: F1
+            icon: mdi:filter
+            color: blue
+            vertical: true
+            features_position: bottom
+          - type: tile
+            entity: binary_sensor.suw_gawartowa_wola_jest_plukanie_f2
+            name: F2
+            icon: mdi:filter
+            color: blue
+            vertical: true
+            features_position: bottom
+          - type: tile
+            entity: binary_sensor.suw_gawartowa_wola_jest_plukanie_f3
+            name: F3
+            icon: mdi:filter
+            color: blue
+            vertical: true
+            features_position: bottom
+          - type: tile
+            entity: binary_sensor.suw_gawartowa_wola_jest_plukanie_f4
+            name: F4
+            icon: mdi:filter
+            color: blue
+            vertical: true
+            features_position: bottom
+      - type: horizontal-stack
+        cards:
+          - type: tile
+            entity: sensor.suw_gawartowa_wola_godz_pluk_f1
+            name: Godz. F1
+            icon: mdi:clock-outline
+            features_position: bottom
+          - type: tile
+            entity: sensor.suw_gawartowa_wola_godz_pluk_f2
+            name: Godz. F2
+            icon: mdi:clock-outline
+            features_position: bottom
+          - type: tile
+            entity: sensor.suw_gawartowa_wola_godz_pluk_f3
+            name: Godz. F3
+            icon: mdi:clock-outline
+            features_position: bottom
+          - type: tile
+            entity: sensor.suw_gawartowa_wola_godz_pluk_f4
+            name: Godz. F4
+            icon: mdi:clock-outline
+            features_position: bottom
+  - type: grid
+    cards:
+      - type: heading
+        heading: Energia
+        heading_style: title
+      - type: horizontal-stack
+        cards:
+          - graph: line
+            type: sensor
+            entity: sensor.suw_gawartowa_wola_voltage_v1n
+            name: L1-N
+            detail: 1
+          - graph: line
+            type: sensor
+            entity: sensor.suw_gawartowa_wola_voltage_v2n
+            name: L2-N
+            detail: 1
+          - graph: line
+            type: sensor
+            entity: sensor.suw_gawartowa_wola_voltage_v3n
+            name: L3-N
+            detail: 1
+      - type: horizontal-stack
+        cards:
+          - type: tile
+            entity: sensor.suw_gawartowa_wola_frequency
+            name: Hz
+            icon: mdi:sine-wave
+            features_position: bottom
+          - type: tile
+            entity: sensor.suw_gawartowa_wola_total_kw
+            name: kW
+            icon: mdi:flash
+            features_position: bottom
+          - type: tile
+            entity: sensor.suw_gawartowa_wola_kwh
+            name: kWh
+            icon: mdi:counter
+            features_position: bottom
+visible:
+  - user: 5b7418e1e917401f99f55c698831d3c9
+  - user: 5fc4985ff44a43f094c54802146ca95b
+  - user: f6227e3a0d2541a5ba36990757a63114
+  - user: e3b31708a2c94172865a145ae1be4c03
+  - user: 82b8b21df71848fea77aa8f7dd54a269
+  - user: 87941921294e4b8fb2d4613f67ec50e7
+  - user: d62aa22a78e548df974cccb6d8c37799
+  - user: c8f54deeeb8c4c5b8dfe22b189e3dc56
+  - user: c8341050bc0941a585b2a1305afea472
+  - user: b1423e75ad7c4ff695f62773e36459e6
+  - user: 7321473d41be4ef0bff0e2085ad465df
+  - user: a6efabe8607244288aa6941c625b6264
+  - user: a87d96f7023f41b2a6432ada30d0179f
+  - user: 96ef5d9ee8304c3b95df667c6cebb857
+  - user: 8b8267ecda664c7fa22bbc0c7f744ccd
+  - user: d85f88c349a143d2aec59d25a90218af
+  - user: c7971dca37514b9197df61a881c71c51
+  - user: f23c30207cab411b957f5449edbe841e
+cards: []
+max_columns: 4
+title: Gawartowa Wola
+badges:
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: binary_sensor.suw_gawartowa_wola_zasilanie_ok
+    name: AC
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: binary_sensor.suw_gawartowa_wola_zasil_siec_ok
+    name: SIEĆ
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: sensor.suw_gawartowa_wola_pq_siec
+    name: PQ sieć
