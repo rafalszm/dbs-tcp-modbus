@@ -6,6 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "custom_components"))
 
+from dbs_tcp_modbus import expected_unique_ids
 from dbs_tcp_modbus.const import (
     CONF_MAP_CSV,
     CONF_SCAN_INTERVAL,
@@ -124,6 +125,31 @@ running,Running,1,2,coil,,,,,,,
         station = StationConfig.from_data(data)
 
         self.assertEqual(station.station_id, "station_192_168_1_10_502_1")
+
+    def test_expected_unique_ids_include_connection_and_map_keys(self) -> None:
+        station = StationConfig(
+            station_id="station_a",
+            name="Station A",
+            host="192.168.1.10",
+            port=502,
+            unit_id=1,
+            scan_interval=10,
+            timeout=3,
+            map_csv="",
+        )
+        registers = [
+            RegisterDefinition("pressure", "Pressure", 4, 10, "uint16"),
+            RegisterDefinition("running", "Running", 1, 2, "coil"),
+        ]
+
+        self.assertEqual(
+            expected_unique_ids(station, registers),
+            {
+                "dbs_tcp_modbus_station_a_connection",
+                "dbs_tcp_modbus_station_a_pressure",
+                "dbs_tcp_modbus_station_a_running",
+            },
+        )
 
 
 def _reg(value_type: str, **kwargs: object) -> RegisterDefinition:

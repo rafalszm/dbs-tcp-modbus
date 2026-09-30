@@ -4,7 +4,7 @@ Custom integration for Home Assistant that reads Modbus TCP stations directly fr
 controllers exposing Modbus TCP. Each station is added as a separate integration entry
 and appears in Home Assistant as one device with many entities.
 
-Version `1.0.4` is read-only. It creates `sensor` and `binary_sensor` entities and does
+Version `1.0.5` is read-only. It creates `sensor` and `binary_sensor` entities and does
 not write coils or registers.
 
 ## Installation
@@ -54,6 +54,12 @@ unavailable until communication recovers.
 
 Use the integration entry `Configure`/`Options` button to edit an existing station and
 paste or replace the CSV map.
+
+When editing a CSV map, treat `key` as the stable entity identifier. If the same `key`
+stays in the map, Home Assistant updates the existing entity even when the name, address,
+type, scale, or unit changes. If a `key` is removed from the map, the integration removes
+the old entity registry entry on reload. If a `key` is changed, Home Assistant treats it
+as a new entity.
 
 The CSV map can be left blank during initial testing. In that mode the integration only
 checks that the Modbus TCP endpoint accepts a TCP connection and creates a diagnostic
