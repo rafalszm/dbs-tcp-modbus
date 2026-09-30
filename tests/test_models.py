@@ -151,6 +151,13 @@ running,Running,1,2,coil,,,,,,,
             },
         )
 
+    def test_example_maps_are_valid(self) -> None:
+        examples_dir = Path(__file__).resolve().parents[1] / "examples"
+        for filename in ("czarnow.csv", "gawartowa_wola.csv", "feliksow.csv"):
+            with self.subTest(filename=filename):
+                registers = parse_register_csv((examples_dir / filename).read_text(encoding="utf-8"))
+                self.assertGreater(len(registers), 0)
+
 
 def _reg(value_type: str, **kwargs: object) -> RegisterDefinition:
     return RegisterDefinition("x", "X", 4, 0, value_type, **kwargs)

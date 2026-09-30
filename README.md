@@ -113,7 +113,21 @@ water_pressure,Water pressure,4,999,uint16,bar,0.1,1,pressure,measurement
 pump_running,Pump running,1,10,coil,,,,running,
 ```
 
-See `examples/feliksow.csv` for a larger map.
+Example maps:
+
+- `examples/czarnow.csv` - generated from the automation register workbook for Czarnow.
+- `examples/gawartowa_wola.csv` - generated from the automation register workbook for Gawartowa Wola.
+- `examples/feliksow.csv` - older migration example.
+
+The CSV map does not contain the station host or port. Configure those in the integration
+entry. For example, Czarnow may use a translated external port even when the source
+workbook lists the controller port as `502`.
+
+To rebuild the Czarnow and Gawartowa Wola examples from the workbook, run:
+
+```bash
+python tools/build_station_maps.py "C:\Users\GoUrbex\Downloads\MB TCP Leszno.xlsx"
+```
 
 ## Repository
 
